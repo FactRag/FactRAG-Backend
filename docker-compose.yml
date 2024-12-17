@@ -8,17 +8,19 @@ services:
     command: gunicorn core.wsgi:application --bind 0.0.0.0:8000
     expose:
       - 8000
+    ports:
+      - "8000:8000"
     env_file:
       - .env
     depends_on:
-      - db
+      - postgres-db
     networks:
       - app_network
 
-  db:
-    image: postgres:13
+  postgres-db:
+    image: docker.io/bitnami/postgresql:17
     volumes:
-      - ./data/postgres:/var/lib/postgresql/data  # Persistent storage on host
+      - 'postgresql_master_data:/bitnami/postgresql'
     env_file:
       - .env
     expose:
@@ -26,12 +28,6 @@ services:
     networks:
       - app_network
     restart: unless-stopped
-    command:
-      - "postgres"
-      - "-c"
-      - "max_connections=200"
-      - "-c"
-      - "shared_buffers=2GB"
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 10s
@@ -42,3 +38,7 @@ services:
 networks:
   app_network:
     driver: bridge
+
+volumes:
+  postgresql_master_data:
+    driver: local
