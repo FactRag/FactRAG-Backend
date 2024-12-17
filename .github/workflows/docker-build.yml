@@ -6,8 +6,7 @@ on:
 
 env:
   DOCKER_REGISTRY: docker.io
-  BACKEND_IMAGE_NAME: ${{ secrets.DOCKER_USERNAME }}/your-app-backend
-  FRONTEND_IMAGE_NAME: ${{ secrets.DOCKER_USERNAME }}/your-app-frontend
+  BACKEND_IMAGE_NAME: ${{ secrets.DOCKER_USERNAME }}/factrag-backend
 
 jobs:
   build-and-push:
