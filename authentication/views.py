@@ -130,7 +130,7 @@ def google_callback(request):
 
     # Generate JWT tokens
     refresh = RefreshToken.for_user(user)
-    print(refresh)
+
     tokens = {
         'refresh': str(refresh),
         'access': str(refresh.access_token)
@@ -143,13 +143,18 @@ def google_callback(request):
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def orcid_login(request):
-    redirect_uri = request.build_absolute_uri('/api/auth/orcid/callback')
+    # get the term_id and dataset from the endpoint
+    dataset = request.GET.get('dataset')
+    term_id = request.GET.get('term_id')
+
+    redirect_uri = 'http://domain.com:8000/api/auth/orcid/callback'
     return Response({
         'auth_url': f'{settings.ORCID_AUTH_URL}?'
                     f'client_id={settings.ORCID_CLIENT_ID}&'
                     f'response_type=code&'
                     f'scope=/authenticate&'
-                    f'redirect_uri={redirect_uri}'
+                    f'redirect_uri={redirect_uri}&'
+                    f'state={term_id}_{dataset}'
     })
 
 @api_view(['GET'])
@@ -157,9 +162,10 @@ def orcid_login(request):
 def orcid_callback(request):
     code = request.GET.get('code')
     state = request.GET.get('state')
+
     term_id, dataset = state.split('_')
 
-    redirect_uri = request.build_absolute_uri('/api/auth/orcid/callback')
+    redirect_uri = 'http://domain.com:8000/api/auth/orcid/callback'
 
     # Exchange code for access token
     token_response = requests.post(
@@ -178,12 +184,14 @@ def orcid_callback(request):
 
     token_data = token_response.json()
     orcid_id = token_data['orcid']
-    print(orcid_id)
 
     # Get ORCID profile
     profile_response = requests.get(
-        f'{settings.ORCID_BASE_URL}/v3.0/{orcid_id}/person',
-        headers={'Authorization': f'Bearer {token_data["access_token"]}'}
+        f'https://pub.sandbox.orcid.org/v3.0/{orcid_id}/person',
+        headers={
+            'Content-Type': 'application/json',
+            'Authorization': f'Bearer {token_data["access_token"]}'
+        }
     )
 
     if not profile_response.ok:
@@ -196,13 +204,16 @@ def orcid_callback(request):
         user = User.objects.get(provider_id=orcid_id)
     except User.DoesNotExist:
         email = profile.get('emails', {}).get('email', [{}])[0].get('email', f'{orcid_id}@orcid.org')
+        first_name = profile.get('name', {}).get('given-names', {}).get('value', '')
+        last_name = profile.get('name', {}).get('family-name', {}).get('value', '')
         user = User.objects.create_user(
             email=email,
+            first_name=first_name,
+            last_name=last_name,
             username=f'orcid_{orcid_id}',
             provider='orcid',
             provider_id=orcid_id
         )
-    print(user)
 
     # Generate JWT tokens
     refresh = RefreshToken.for_user(user)
@@ -213,5 +224,4 @@ def orcid_callback(request):
 
     # Redirect to frontend with tokens
     frontend_url = settings.FRONTEND_URL
-    print(tokens)
     return redirect(f'{frontend_url}/auth/callback?tokens={jwt.encode(tokens, settings.SECRET_KEY)}&dataset={dataset}&term_id={term_id}')

@@ -25,7 +25,8 @@ SECRET_KEY = 'django-insecure-x+*yj$6h8nl+fyo3zfjv(%^*wimqxevxy(c4v3f$x#adu@i$@&
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
+
 
 
 # Application definition
@@ -96,12 +97,8 @@ WSGI_APPLICATION = 'core.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.environ.get('POSTGRESQL_DATABASE'),
-        'USER': os.environ.get('POSTGRESQL_USERNAME'),
-        'PASSWORD': os.environ.get('POSTGRESQL_PASSWORD'),
-        'HOST': os.environ.get('POSTGRESQL_HOST'),
-        'PORT': '5432'
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db'),
     },
 }
 
@@ -203,18 +200,18 @@ AUTH_USER_MODEL = 'authentication.User'
 SITE_ID = 1
 
 # Google OAuth2 settings
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = ''
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = ''
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = os.environ.get('GOOGLE_OAUTH2_KEY'),
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = os.environ.get('GOOGLE_OAUTH2_SECRET'),
 SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = [
     'https://www.googleapis.com/auth/userinfo.email',
     'https://www.googleapis.com/auth/userinfo.profile',
 ]
 
 # ORCID OAuth2 settings
-ORCID_CLIENT_ID = ''
-ORCID_CLIENT_SECRET = ''
-ORCID_BASE_URL = 'https://orcid.org'
+ORCID_CLIENT_ID = os.environ.get('ORCID_CLIENT_ID'),
+ORCID_CLIENT_SECRET = os.environ.get('ORCID_CLIENT_SECRET'),
+ORCID_BASE_URL = 'https://sandbox.orcid.org'
 ORCID_AUTH_URL = f'{ORCID_BASE_URL}/oauth/authorize'
 ORCID_TOKEN_URL = f'{ORCID_BASE_URL}/oauth/token'
 
-FRONTEND_URL = 'https://rag-ui-beta.vercel.app'
+FRONTEND_URL = os.environ.get('FRONTEND_URL')

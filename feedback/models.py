@@ -19,7 +19,7 @@ class Feedback(models.Model):
     feedback_type = models.CharField(
         max_length=20,
         choices=FEEDBACK_TYPES,
-        default='uncertain'
+        default='uncertapubin'
     )
     comment = models.TextField(blank=True)
     is_public = models.BooleanField(default=True)
