@@ -11,7 +11,9 @@ env:
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
-
+    strategy:
+      matrix:
+        architecture: [amd64, arm64]
     steps:
       - uses: actions/checkout@v3
 
@@ -36,7 +38,8 @@ jobs:
           push: true
           tags: |
             ${{ env.BACKEND_IMAGE_NAME }}:latest
-            ${{ env.BACKEND_IMAGE_NAME }}:${{ github.sha }}
+            ${{ env.BACKEND_IMAGE_NAME }}:${{ github.sha }}-${{ matrix.architecture }}
             ${{ env.BACKEND_IMAGE_NAME }}:${{ steps.timestamp.outputs.timestamp }}
+          platforms: linux/${{ matrix.architecture }}
           cache-from: type=registry,ref=${{ env.BACKEND_IMAGE_NAME }}:buildcache
           cache-to: type=registry,ref=${{ env.BACKEND_IMAGE_NAME }}:buildcache,mode=max
