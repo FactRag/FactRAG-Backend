@@ -203,17 +203,17 @@ AUTH_USER_MODEL = 'authentication.User'
 SITE_ID = 1
 
 # Google OAuth2 settings
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = os.environ.get('GOOGLE_OAUTH2_KEY'),
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = os.environ.get('GOOGLE_OAUTH2_SECRET'),
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = os.environ.get('GOOGLE_OAUTH2_KEY')
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = os.environ.get('GOOGLE_OAUTH2_SECRET')
 SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = [
     'https://www.googleapis.com/auth/userinfo.email',
     'https://www.googleapis.com/auth/userinfo.profile',
 ]
 
 # ORCID OAuth2 settings
-ORCID_CLIENT_ID = os.environ.get('ORCID_CLIENT_ID'),
-ORCID_CLIENT_SECRET = os.environ.get('ORCID_CLIENT_SECRET'),
-ORCID_BASE_URL = 'https://sandbox.orcid.org'
+ORCID_CLIENT_ID = os.environ.get('ORCID_CLIENT_ID')
+ORCID_CLIENT_SECRET = os.environ.get('ORCID_CLIENT_SECRET')
+ORCID_BASE_URL = 'https://orcid.org'
 ORCID_AUTH_URL = f'{ORCID_BASE_URL}/oauth/authorize'
 ORCID_TOKEN_URL = f'{ORCID_BASE_URL}/oauth/token'
 

@@ -74,7 +74,7 @@ def google_login(request):
     dataset = request.GET.get('dataset')
     term_id = request.GET.get('term_id')
 
-    redirect_uri = request.build_absolute_uri(f'/api/auth/google/callback')
+    redirect_uri = 'https://factcheck.dei.unipd.it/api/auth/google/callback'
 
     return Response({
         'auth_url': f'https://accounts.google.com/o/oauth2/v2/auth?'
@@ -92,7 +92,7 @@ def google_callback(request):
     state = request.GET.get('state')
     term_id, dataset = state.split('_')
 
-    redirect_uri = request.build_absolute_uri('/api/auth/google/callback')
+    redirect_uri ='https://factcheck.dei.unipd.it/api/auth/google/callback'
 
     # Exchange code for access token
     token_response = requests.post(
