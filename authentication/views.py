@@ -147,7 +147,7 @@ def orcid_login(request):
     dataset = request.GET.get('dataset')
     term_id = request.GET.get('term_id')
 
-    redirect_uri = 'http://domain.com:8000/api/auth/orcid/callback'
+    redirect_uri = 'https://factcheck.dei.unipd.it/api/auth/orcid/callback'
     return Response({
         'auth_url': f'{settings.ORCID_AUTH_URL}?'
                     f'client_id={settings.ORCID_CLIENT_ID}&'
@@ -165,7 +165,7 @@ def orcid_callback(request):
 
     term_id, dataset = state.split('_')
 
-    redirect_uri = 'http://domain.com:8000/api/auth/orcid/callback'
+    redirect_uri = 'https://factcheck.dei.unipd.it/api/auth/orcid/callback'
 
     # Exchange code for access token
     token_response = requests.post(
@@ -187,7 +187,7 @@ def orcid_callback(request):
 
     # Get ORCID profile
     profile_response = requests.get(
-        f'https://pub.sandbox.orcid.org/v3.0/{orcid_id}/person',
+        f'https://pub.orcid.org/v3.0/{orcid_id}/person',
         headers={
             'Content-Type': 'application/json',
             'Authorization': f'Bearer {token_data["access_token"]}'
