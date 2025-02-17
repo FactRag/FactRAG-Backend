@@ -138,7 +138,7 @@ def google_callback(request):
 
     # Redirect to frontend with tokens
     frontend_url = settings.FRONTEND_URL
-    return redirect(f'{frontend_url}/auth/callback?tokens={jwt.encode(tokens, settings.SECRET_KEY)}&dataset={dataset}&term_id={term_id}')
+    return redirect(f'{frontend_url}/callback?tokens={jwt.encode(tokens, settings.SECRET_KEY)}&dataset={dataset}&term_id={term_id}')
 
 @api_view(['GET'])
 @permission_classes([AllowAny])
@@ -224,4 +224,4 @@ def orcid_callback(request):
 
     # Redirect to frontend with tokens
     frontend_url = settings.FRONTEND_URL
-    return redirect(f'{frontend_url}/auth/callback?tokens={jwt.encode(tokens, settings.SECRET_KEY)}&dataset={dataset}&term_id={term_id}')
+    return redirect(f'{frontend_url}/callback?tokens={jwt.encode(tokens, settings.SECRET_KEY)}&dataset={dataset}&term_id={term_id}')
